@@ -1,0 +1,56 @@
+# Experiment Template
+# Copy this file and fill in the values for each experiment
+
+experiment_id: "exp_000_template"
+date: "YYYY-MM-DD"  # ISO 8601 date
+objective: "Brief description of what this experiment tests"
+method: "movenet | posenet | openpose | deeplabcut | custom"
+input_video: "data/raw/sample_walking.mp4"
+
+configuration:
+  model:
+    name: ""  # e.g., "movenet_lightning", "posenet_resnet50"
+    version: ""  # Model version or checkpoint
+    source: ""  # "tfhub", "local", "github", etc.
+  video:
+    start_frame: 0
+    end_frame: null  # null = process all frames
+    skip_frames: 1  # Process every Nth frame
+    resize: null  # [width, height] or null
+  inference:
+    confidence_threshold: 0.3
+    input_size: 192  # Model input resolution
+    device: "cpu"  # "cpu", "cuda", "mps"
+  output:
+    save_keypoints: true
+    save_annotated_video: false
+    save_visualizations: true
+
+software_versions:
+  python: "3.12.3"
+  opencv: ""  # Fill after: import cv2; print(cv2.__version__)
+  numpy: ""
+  pandas: ""
+  tensorflow: ""  # If applicable
+  pytorch: ""  # If applicable
+
+metrics:
+  - name: "mean_keypoint_confidence"
+    value: "Not yet measured."
+  - name: "percentage_detected_frames"
+    value: "Not yet measured."
+  - name: "processing_fps"
+    value: "Not yet measured."
+  - name: "mean_per_joint_error"  # If ground truth available
+    value: "Not yet measured."
+
+results:
+  keypoints_file: "data/processed/keypoints_<experiment_id>.csv"
+  annotated_video: "data/processed/annotated_<experiment_id>.mp4"
+  figures_dir: "reports/figures/"
+
+observations: |
+  Free-form notes about what worked, what didn't, unexpected behavior,
+  visual quality assessment, etc.
+
+status: "PLANNED"  # PLANNED | RUNNING | COMPLETED | FAILED
