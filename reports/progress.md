@@ -1,7 +1,7 @@
 # Project Progress
 
 ## Current Stage
-**Stage 0: Project Setup** (Initial scaffold created)
+**Stage 1: Video Processing with OpenCV** — COMPLETED
 
 ## Completed Tasks
 - [x] Project structure created
@@ -10,12 +10,12 @@
 - [x] Experiment tracking templates created
 - [x] Git repository initialized
 - [x] Sample video identified and documented
+- [x] Python dependencies installed in virtual environment
+- [x] Sample video downloaded and verified
+- [x] OpenCV video I/O verified
+- [x] **Stage 1: Video processing with OpenCV**
 
 ## Pending Tasks
-- [ ] Install Python dependencies in virtual environment
-- [ ] Download/verify sample video
-- [ ] Verify OpenCV can read the sample video
-- [ ] Stage 1: Video processing with OpenCV
 - [ ] Stage 2: MoveNet inference
 - [ ] Stage 3: Keypoint visualization and motion analysis
 - [ ] Stage 4: PoseNet
@@ -23,53 +23,36 @@
 - [ ] Stage 6: DeepLabCut
 - [ ] Stage 7: Evaluation and research questions
 
-## Files Changed (Initial Scaffold)
-- README.md
-- LICENSE
-- .gitignore
-- .editorconfig
-- requirements.txt
-- pyproject.toml
-- data/README.md
-- data/raw/.gitkeep
-- data/interim/.gitkeep
-- data/processed/.gitkeep
-- notebooks/README.md
-- src/README.md
-- tests/README.md
-- configs/README.md
-- experiments/README.md
-- experiments/experiment_template.yaml
-- reports/README.md
-- reports/progress.md
-- reports/experiment_log.md
-- reports/results.md
-- reports/figures/.gitkeep
-- docs/README.md
-- docs/learning_roadmap.md
-- docs/concepts.md
-- docs/tools_comparison.md
-- docs/dataset_card.md
-- docs/setup_guide.md
-- docs/research_notes.md
-- docs/decisions/README.md
-- scripts/README.md
+## Files Changed (Stage 1)
+- `notebooks/stage_1_video_processing.ipynb` — executed notebook with all outputs
+- `data/raw/sample_walking.mp4` — downloaded sample video (8.9 MB)
+- `data/interim/extracted_frames/*.jpg` — 14 extracted frames
+- `data/processed/resized_walking.mp4` — resized video (7.0 MB)
+- `data/processed/annotated_walking.mp4` — annotated video v1 (18.4 MB)
+- `data/processed/annotated_walking_v2.mp4` — annotated video v2 (16.7 MB)
 
 ## Latest Successful Checks
 - Python 3.12.3 available
 - Git 2.43.0 available
 - GitHub CLI available (not authenticated)
 - 20 GB disk space available
+- FFmpeg installed and working
+- Virtual environment created (`.venv/`)
+- Dependencies installed: OpenCV 4.x, NumPy, Pandas, Matplotlib, Jupyter, PyYAML, tqdm
+- Jupyter kernel "Markerless Pose Estimation" registered
+- Sample video opens correctly with OpenCV (1080×1920, 29.97 FPS, 405 frames)
 
 ## Known Issues
-- FFmpeg not installed (needed for video writing)
 - GitHub CLI not authenticated (cannot create remote repo automatically)
-- Sample video not yet downloaded
+- Large generated video files in `data/processed/` are not gitignored (consider adding `data/processed/*.mp4` to .gitignore if not meant for version control)
 
 ## Next Recommended Step
-1. Install FFmpeg: `sudo apt update && sudo apt install ffmpeg`
-2. Create virtual environment: `python3 -m venv .venv && source .venv/bin/activate`
-3. Install dependencies: `pip install -r requirements.txt`
-4. Download sample video (see docs/dataset_card.md for instructions)
-5. Verify video can be opened with OpenCV
-6. Begin Stage 1: Video processing with OpenCV
+1. Begin Stage 2: MoveNet inference
+   - Install TensorFlow: `pip install tensorflow tensorflow-hub`
+   - Load MoveNet Lightning from TF Hub
+   - Use letterbox preprocessing (from Stage 1) to prepare 256×256 input
+   - Run inference on sample video
+   - Save keypoints to CSV
+   - Visualize predictions
+   - Create experiment config: `cp experiments/experiment_template.yaml experiments/exp_001_movenet.yaml`
+   - Log results in `reports/experiment_log.md` and `reports/results.md`
