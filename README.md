@@ -34,7 +34,7 @@ This is an educational project for learning markerless human pose estimation thr
 
 | Stage | Topic | Status |
 |-------|-------|--------|
-| 1 | Video processing with OpenCV | NOT STARTED |
+| 1 | Video processing with OpenCV | **COMPLETED** |
 | 2 | MoveNet | NOT STARTED |
 | 3 | Keypoint visualization and motion analysis | NOT STARTED |
 | 4 | PoseNet | NOT STARTED |
@@ -162,7 +162,9 @@ cp experiments/experiment_template.yaml experiments/exp_001_movenet.yaml
 
 ## Current Project Status
 
-**Initial scaffold only.** No experiments have been executed. All stages marked as NOT STARTED.
+**Stage 1 (Video Processing with OpenCV) completed.** The notebook `notebooks/stage_1_video_processing.ipynb` covers video I/O, frame extraction, resizing, letterboxing, annotation, and coordinate transformations. A sample video (`data/raw/sample_walking.mp4`) has been downloaded and processed. See `reports/stage_1_video_processing.md` for details.
+
+Stages 2–7 are planned.
 
 ## Official Documentation Links
 

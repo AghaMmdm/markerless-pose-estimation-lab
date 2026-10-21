@@ -35,11 +35,11 @@ Approximate timeline: 1-2 hours/day, 4 weeks total.
    - Performance considerations
 
 ### Expected Outputs
+- [x] Notebook: `notebooks/stage_1_video_processing.ipynb` - Interactive exploration (completed)
 - [ ] Script: `scripts/extract_frames.py` - Extract frames at configurable intervals
 - [ ] Script: `scripts/video_info.py` - Print video metadata
-- [ ] Notebook: `notebooks/stage_1_video_processing.ipynb` - Interactive exploration
 - [ ] Config: `configs/video.yaml` - Default video processing parameters
-- [ ] Extracted frames in `data/interim/frames/`
+- [x] Extracted frames in `data/interim/extracted_frames/` (14 frames from timestamp and interval sampling)
 
 ### Key OpenCV Functions to Learn
 - `cv2.VideoCapture()`
@@ -49,10 +49,10 @@ Approximate timeline: 1-2 hours/day, 4 weeks total.
 - `cv2.resize()`, `cv2.imwrite()`
 
 ### Mini-Exercises
-1. Open sample video and print: FPS, frame count, resolution, duration
-2. Extract every 30th frame as JPEG to `data/interim/frames/`
-3. Create annotated video with frame numbers drawn on each frame
-4. Measure time to process full video
+1. ~~Open sample video and print: FPS, frame count, resolution, duration~~ ✅ Done (Cells 1–6, 21–22)
+2. ~~Extract every 30th frame as JPEG to `data/interim/frames/`~~ ✅ Done (Cells 9–10, saved to `data/interim/extracted_frames/`)
+3. ~~Create annotated video with frame numbers drawn on each frame~~ ✅ Done (Cells 18–19, 23–24)
+4. ~~Measure time to process full video~~ ⏳ Not explicitly timed, but frame-by-frame processing verified
 
 ### Resources
 - [OpenCV Video I/O Tutorial](https://docs.opencv.org/4.x/dd/d43/tutorial_py_video_display.html)
