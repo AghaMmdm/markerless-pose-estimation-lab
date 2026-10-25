@@ -35,7 +35,7 @@ This is an educational project for learning markerless human pose estimation thr
 | Stage | Topic | Status |
 |-------|-------|--------|
 | 1 | Video processing with OpenCV | **COMPLETED** |
-| 2 | MoveNet | NOT STARTED |
+| 2 | MoveNet inference & analysis | **COMPLETED** |
 | 3 | Keypoint visualization and motion analysis | NOT STARTED |
 | 4 | PoseNet | NOT STARTED |
 | 5 | OpenPose | NOT STARTED |
@@ -164,7 +164,20 @@ cp experiments/experiment_template.yaml experiments/exp_001_movenet.yaml
 
 **Stage 1 (Video Processing with OpenCV) completed.** The notebook `notebooks/stage_1_video_processing.ipynb` covers video I/O, frame extraction, resizing, letterboxing, annotation, and coordinate transformations. A sample video (`data/raw/sample_walking.mp4`) has been downloaded and processed. See `reports/stage_1_video_processing.md` for details.
 
-Stages 2–7 are planned.
+**Stage 2 (MoveNet Inference & Analysis) completed.** The notebook `notebooks/stage_2_pose_estimation.ipynb` covers:
+- MoveNet Lightning (TFLite) inference on walking video
+- 17-keypoint extraction with confidence scores
+- Skeleton visualization and confidence analysis
+- Knee-angle calculation across 41 sampled frames (18 valid estimates)
+- Temporal displacement analysis of lower-limb keypoints
+- Letterbox preprocessing with coordinate mapping back to original image
+- Temporal consistency analysis and bilateral leg geometry comparison
+- Investigation of sudden knee-angle changes near 2.669–3.003 seconds
+- Bilateral lower-limb keypoint visualization (frames 80, 90, 100)
+
+See `reports/stage_2_pose_estimation.md` for detailed experimental report.
+
+Stages 3–7 are planned.
 
 ## Official Documentation Links
 

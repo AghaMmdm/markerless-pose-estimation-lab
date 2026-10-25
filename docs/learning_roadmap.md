@@ -92,40 +92,52 @@ Approximate timeline: 1-2 hours/day, 4 weeks total.
    - Creating annotated output video
 
 ### Expected Outputs
-- [ ] Notebook: `notebooks/stage_2_movenet_inference.ipynb`
-- [ ] Config: `configs/movenet.yaml`
-- [ ] Keypoints CSV: `data/processed/keypoints_exp001.csv`
-- [ ] Annotated video: `data/processed/annotated_exp001.mp4`
-- [ ] Figures: `reports/figures/fig_exp001_*.png`
-- [ ] Experiment log entry in `reports/experiment_log.md`
+- [x] Notebook: `notebooks/stage_2_pose_estimation.ipynb` (completed, 94 cells)
+- [x] Config: `configs/movenet.yaml` (not needed; TFLite model params in notebook)
+- [x] Keypoints in original coords: `letterboxed_keypoints` (41, 17, 3) in notebook
+- [x] Experiment log entry in `reports/experiment_log.md` (exp_001)
+- [x] Detailed report: `reports/stage_2_pose_estimation.md`
 
 ### Key Concepts
-- TensorFlow Hub model loading
-- Batch inference for speed
-- Coordinate transformation (model output → original frame)
-- Keypoint data structure for Pandas
+- TFLite model loading with ai-edge-litert
+- Letterbox preprocessing (preserve aspect ratio)
+- Inverse coordinate transformation (model → original image)
+- Keypoint confidence analysis & temporal consistency
+- Geometric angle calculation from 2D keypoints
+- Occlusion detection via confidence + displacement
 
-### Mini-Exercises
-1. Load MoveNet Lightning from TF Hub
-2. Run inference on single frame, visualize output
-3. Process full video, save keypoints to CSV
-4. Create annotated video with skeleton overlay
-5. Plot confidence distributions per keypoint
+### Mini-Exercises (Completed in Notebook)
+1. ~~Load MoveNet Lightning from TF Hub~~ ✅ (Cell 41)
+2. ~~Run inference on single frame, visualize output~~ ✅ (Cells 43–46)
+3. ~~Process full video, save keypoints~~ ✅ (Cells 47–50, 89)
+4. ~~Create annotated video with skeleton overlay~~ ✅ (Cell 90)
+5. ~~Plot confidence distributions per keypoint~~ ✅ (Cell 81)
+6. ~~Calculate knee angles across frames~~ ✅ (Cells 65–72)
+6. ~~Investigate sudden angle changes~~ ✅ (Cells 94–96)
+7. ~~Letterbox preprocessing with inverse transform~~ ✅ (Cells 86–93)
 
 ### Resources
 - [MoveNet on TF Hub](https://tfhub.dev/google/movenet/singlepose/lightning/4)
-- [MoveNet Colab Example](https://colab.research.google.com/github/tensorflow/hub/blob/master/examples/colab/movenet.ipynb)
+- [MoveNet TFLite](https://www.tensorflow.org/lite/models/pose_estimation/overview)
 - [COCO Keypoint Format](https://cocodataset.org/#keypoints-2020)
 
 ---
 
-## Week 3: Keypoint Analysis and Motion Visualization
+## Week 3: Keypoint Analysis and Motion Visualization (Stage 3)
 
 ### Learning Objectives
 - Store keypoints in structured Pandas DataFrames
-- Calculate joint angles from 2D keypoints
-- Create time-series visualizations
-- Handle missing and low-confidence keypoints
+- Calculate joint angles from 2D keypoints (hip, knee, ankle)
+- Create time-series visualizations with confidence bands
+- Handle missing and low-confidence keypoints (interpolation, smoothing)
+- **Investigate occlusion handling strategies**
+- **Validate sagittal-plane gait analysis requirements**
+
+### Prerequisites from Stage 2
+- [x] MoveNet inference pipeline with letterbox preprocessing
+- [x] Knee angle calculation function (`calculate_angle`)
+- [x] Temporal displacement analysis framework
+- [x] Confidence-based filtering approach
 
 ### Topics
 1. **Storing keypoints in Pandas**
@@ -255,8 +267,36 @@ def oks(pred, gt, sigmas, area):
 
 ---
 
-## Beyond Week 4: Suggested Extensions
+## Stage 4+: Sagittal-Plane Gait Analysis (Next Major Stage)
 
+**This is a research requirement, not an optional extension.**
+
+Our current frontal-view video is poorly suited for sagittal-plane flexion/extension measurements (hip/knee/ankle flexion primarily occurs in the sagittal plane). The next major stage **requires a suitable sagittal-plane walking video**.
+
+### Prerequisites (Must Complete Before Stage 4)
+1. **Select and validate sagittal-plane walking video** — Side view of single person walking, full body visible, minimal occlusion
+2. **Camera view assessment** — Verify camera is perpendicular to walking direction
+3. **Frame sampling & pose estimation** — Apply Stage 2 pipeline to new video
+4. **Hip, knee, ankle keypoint trajectories** — Extract all three joint angles
+5. **Temporal angle plots** — Stance/swing phase detection, gait cycle segmentation
+6. **Occlusion handling** — Temporal smoothing, Kalman filtering, confidence-weighted interpolation
+6. **Measurement reliability evaluation** — Confidence bands, outlier detection, ground-truth comparison if available
+
+### Video Selection Criteria
+- Sagittal (side) view, camera perpendicular to walking direction
+- Single person, full body visible
+- Multiple gait cycles (≥5 complete cycles)
+- Good lighting, minimal background clutter
+- Public domain / CC0 / permissive license (for redistribution in repo)
+- Recommended sources: OpenSim, KIT Motion, CMU MoCap, or self-recorded
+
+### Why Sagittal Plane?
+- Hip/knee/ankle flexion/extension primarily occurs in sagittal plane
+- Frontal view captures abduction/adduction poorly
+- Standard gait analysis literature uses sagittal-plane kinematics
+- Enables stance/swing phase detection from knee angle trajectory
+
+### Beyond Stage 4: Further Extensions
 - **3D Pose Estimation**: VideoPose3D, MediaPipe Pose 3D
 - **Temporal Models**: TCN, LSTM for smoothing
 - **Action Recognition**: Classify gait, activities

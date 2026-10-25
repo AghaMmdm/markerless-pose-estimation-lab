@@ -1,28 +1,35 @@
-# Reports Directory
+# Reports Index
 
-Project progress, experiment logs, and results documentation.
+This directory contains project progress tracking, experimental logs, and detailed reports.
 
 ## Files
 
-- `progress.md` - Current project status and next steps
-- `experiment_log.md` - Table of all experiments
-- `results.md` - Detailed results for each experiment
-- `figures/` - Generated plots and visualizations
+| File | Description | Last Updated |
+|------|-------------|--------------|
+| `progress.md` | Overall project status, completed/pending tasks, known issues | 2026-10-23 |
+| `experiment_log.md` | Table of all experiments with status and key results | 2026-10-23 |
+| `stage_1_video_processing.md` | Detailed report on Stage 1 video processing exercises | 2026-10-20 |
+| `stage_2_pose_estimation.md` | Detailed experimental report for Stage 2 (MoveNet) | 2026-10-23 |
+| `results.md` | Template for detailed per-experiment results | 2026-10-18 |
+| `figures/` | Generated plots and visualizations | — |
 
-## Workflow
+## Experiment Summary
 
-1. After each experiment, update `experiment_log.md` with a new row
-2. Write detailed results in `results.md`
-3. Save key figures to `figures/`
-4. Update `progress.md` with current status
+| ID | Method | Stage | Status | Key Result |
+|----|--------|-------|--------|------------|
+| exp_001 | MoveNet Lightning (TFLite) | 2 | COMPLETED | 18 valid knee angles; letterbox preprocessing; sudden angle change at 3s investigated |
+| exp_002 | MoveNet (refined) | 3 | PLANNED | Knee-angle smoothing, hip/ankle angles, occlusion handling |
+| exp_003 | PoseNet | 4 | PLANNED | Comparison with MoveNet |
+| exp_004 | OpenPose | 5 | PLANNED | Multi-person evaluation |
+| exp_005 | DeepLabCut | 6 | PLANNED | Custom keypoint training |
 
-## Figure Naming
+## Quick Links
 
-```
-fig_<exp_id>_<description>.png
-```
+- [Project Progress](progress.md)
+- [Experiment Log](experiment_log.md)
+- [Stage 1 Report](stage_1_video_processing.md)
+- [Stage 2 Report](stage_2_pose_estimation.md)
 
-Examples:
-- `fig_exp001_keypoints_overlay.png`
-- `fig_exp001_joint_angles.png`
-- `fig_exp002_method_comparison.png`
+---
+
+*Reports are updated after each experimental stage. See `experiment_log.md` for the authoritative experiment table.*
