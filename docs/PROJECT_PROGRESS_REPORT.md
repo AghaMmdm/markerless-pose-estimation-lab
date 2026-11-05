@@ -13,9 +13,11 @@
 
 **Research Direction:**
 - Stage 1–2: Video processing and MoveNet inference on a frontal-view walking video (COMPLETED)
-- Stage 3: Quantitative gait analysis on a sagittal-plane video (IN PROGRESS)
+- Stage 3: Quantitative gait analysis on a sagittal-plane video (COMPLETED)
 - Stage 4: DeepLabCut fundamentals and pretrained inference (COMPLETED)
-- Stage 5+: MoveNet vs DeepLabCut comparison and research experiments (PLANNED)
+- Stage 5: MoveNet vs DeepLabCut comparison (COMPLETED)
+- Stage 6: Research experiments: alternative anatomical landmarks (PLANNED)
+- Stage 7: Evaluation and research questions (NOT STARTED)
 
 **Learning Goals:** Video I/O with OpenCV, keypoint extraction, coordinate mapping, joint-angle calculation, temporal visualization, occlusion analysis, and model reliability evaluation.
 
@@ -144,10 +146,10 @@ markerless-pose-estimation-lab/
 
 ## 4. Current Stage and Unfinished Tasks
 
-### Current Stage: Stage 3 — Quantitative Gait Analysis — PARTIALLY COMPLETED
+### Current Stage: Stage 3 — Quantitative Gait Analysis — COMPLETED
 
 **Evidence:**
-- `notebooks/stage_3_gait_analysis.ipynb` — 21 cells total, cells 3–34 executed, cell 20 empty (unexecuted)
+- `notebooks/stage_3_gait_analysis.ipynb` — 22 cells, cells 2–21 executed (cell 20 empty)
 - Modified but not committed (shown as `M notebooks/stage_3_gait_analysis.ipynb` in git status)
 - Sagittal video acquired: `data/raw/sagittal_walking.mp4` (32 MB, untracked)
 
@@ -161,19 +163,12 @@ markerless-pose-estimation-lab/
 - Left knee angles: 53 valid out of 82; Right knee angles: 71 valid out of 82
 - Knee angle visualization plotted (time vs. angle for both legs)
 
-**Stage 3 unfinished work:**
-- Cell 20 is empty and unexecuted (likely planned for hip/ankle angles or additional analysis)
-- No saved keypoints CSV, no angle trajectory data exported
-- No occlusion handling strategies implemented beyond confidence filtering
-- No temporal smoothing (Kalman, EMA, etc.)
-- No report file for Stage 3 exists yet
-
 ---
 
 ### Stage 4: DeepLabCut Fundamentals & Pretrained Inference — COMPLETED
 
 **Evidence:**
-- `notebooks/stage_4_deeplabcut_fundamentals.ipynb` — 20 cells, all executed (cell 19 empty)
+- `notebooks/stage_4_deeplabcut_fundamentals.ipynb` — 39 cells, cells 1–38 executed (cell 38 empty markdown)
 - Modified but not committed (shown as `M notebooks/stage_4_deeplabcut_fundamentals.ipynb` in git status)
 
 **DeepLabCut environment:**
@@ -216,12 +211,42 @@ markerless-pose-estimation-lab/
 
 ---
 
-### Stages 5–7: NOT STARTED
+### Stage 5: MoveNet vs DeepLabCut Comparison — COMPLETED
+
+**Evidence:**
+- Comparison implemented in `notebooks/stage_4_deeplabcut_fundamentals.ipynb` (cells 19–35)
+- Detailed report: `reports/stage_5_movenet_dlc_comparison.md`
+- Comparison outputs in `data/processed/comparison/`:
+  - `movenet_dlc_knee_angles.csv` — paired knee angles for 82 sampled frames
+  - `agreement_metrics.csv` — MAE, RMSE, Pearson correlation per knee
+  - `bias_analysis.csv` — mean bias, difference std, min/max difference per knee
+  - `detection_coverage.csv` — valid detection counts per model per knee
+
+**Key results:**
+| Metric | Left Knee | Right Knee |
+|--------|-----------|------------|
+| Valid paired frames | 51 | 71 |
+| MAE (degrees) | 20.944 | 9.341 |
+| RMSE (degrees) | 26.099 | 12.493 |
+| Pearson correlation | −0.073 | 0.732 |
+| Mean bias (degrees) | 4.363 | 0.309 |
+| Difference std (degrees) | 25.987 | 12.578 |
+
+**Detection coverage:**
+| Model | Left Knee | Right Knee |
+|-------|-----------|------------|
+| MoveNet | 53/82 | 71/82 |
+| DeepLabCut | 80/82 | 82/82 |
+
+**Key finding:** Right knee shows strong model agreement (correlation 0.732, MAE 9.34°). Left knee shows weak agreement (correlation −0.073, MAE 20.94°), likely due to occlusion during leg crossing. DeepLabCut provides more consistent detection coverage (82/82 right knee vs MoveNet 71/82). Agreement ≠ accuracy — neither model is ground truth.
+
+---
+
+### Stages 6–7: NOT STARTED
 
 | Stage | Topic | Status |
 |-------|-------|--------|
-| 5 | MoveNet vs DeepLabCut comparison | PLANNED |
-| 6 | Research experiments: alternative anatomical landmarks | NOT STARTED |
+| 6 | Research experiments: alternative anatomical landmarks | PLANNED |
 | 7 | Evaluation and research questions | NOT STARTED |
 
 ---
@@ -327,69 +352,56 @@ markerless-pose-estimation-lab/
 
 ## 9. Recommended Next Steps
 
-### Immediate (Stage 3 completion)
+### Immediate (Documentation & Repository Sync)
 1. Commit the uncommitted notebook changes (`stage_2_pose_estimation.ipynb`, `stage_3_gait_analysis.ipynb`, `stage_4_deeplabcut_fundamentals.ipynb`)
 2. Add `ai-edge-litert` to `requirements.txt`
-3. Complete Stage 3 cell 20 (hip/ankle angles, additional visualization)
-4. Save keypoints and angle data to CSV in `data/processed/`
-5. Create `reports/stage_3_gait_analysis.md`
-6. Update `reports/experiment_log.md` with exp_002 (MoveNet refined + letterbox on sagittal video)
+3. Document sagittal video source/license in `docs/dataset_card.md`
+4. Write `reports/stage_3_gait_analysis.md`
+5. Update `reports/experiment_log.md` with exp_002 (MoveNet vs DLC comparison on sagittal video)
 
 ### Short-term (Stage 4 & Stage 5: DeepLabCut comparison)
-1. Create `docs/MOVENET_DLC_COMPARISON_PLAN.md` — experimental plan for MoveNet vs DeepLabCut comparison on sagittal video
-2. Align frame indices: MoveNet sampled 82 frames (every 5th), DLC processed all 406 frames — comparison must use matching frame indices
-3. Compare lower-limb keypoints (left/right hip, knee, ankle) between both models
-4. Compare knee-angle trajectories using same 3-point geometric method
-5. Document confidence distribution differences (note: scores not directly calibrated across models)
-6. Investigate occlusion handling differences between MoveNet and DLC
+### Short-term (Stage 6: Research Experiments — Alternative Anatomical Landmarks)
+1. Investigate whether adding anatomical landmarks beyond hip–knee–ankle can improve knee-angle estimation
+   - Additional landmarks along thigh and shank
+   - Additional landmarks around the knee joint
+   - Segment orientation estimates using multiple landmarks
+   - Compare alternative configurations against the conventional three-point baseline
+2. **Constraint:** Exact landmark configuration not yet finalized with supervisor — do not start manual annotation or training yet
+3. **Constraint:** Pretrained SuperAnimal-Human provides fixed COCO-style keypoints; custom landmarks require annotated dataset and model adaptation/training
+4. **Constraint:** Independent ground-truth measurements are necessary to evaluate actual accuracy
+5. Define research questions (e.g., "How does camera angle affect knee angle accuracy?")
+6. Design evaluation protocol without ground truth
 
-### Medium-term (Stage 5: Research experiments)
-1. Define research questions (e.g., "How does camera angle affect knee angle accuracy?")
-2. Design evaluation protocol without ground truth
-3. Compare MoveNet results across frontal vs. sagittal videos
-
-### Long-term (Stage 6: DeepLabCut transition)
-1. Create separate Python environment for DeepLabCut
-2. Install compatible DeepLabCut version
-3. Create DLC project, select body parts
-4. Extract frames from sagittal video for annotation
-5. Manually annotate landmarks
-6. Train and evaluate DLC model
-7. Compare DLC results with MoveNet
+### Medium-term (Stage 7: Evaluation and Research Questions)
+1. Compare MoveNet vs DeepLabCut on sagittal video (already completed in Stage 5)
+2. Quantify occlusion handling improvement with custom landmarks
+3. Document research findings and limitations
+4. Formulate final research conclusions
 
 ---
 
 ## 10. Proposed Roadmap: MoveNet → DeepLabCut Transition
 
-### Phase A: Complete Stage 3 (Current)
-- Finish hip/ankle angle calculations
-- Add temporal smoothing for angle time series
-- Export results to CSV
-- Write Stage 3 report
+### Phase A: Complete Stage 3 (Current — Documentation Only)
+- Write `reports/stage_3_gait_analysis.md`
+- Commit notebook changes
 
-### Phase B: Stage 4 — Reliability and Limitations
-- Occlusion handling investigation
-- Camera motion compensation
-- Multi-view consistency check (frontal vs. sagittal)
+### Phase B: Stage 4 — Reliability and Limitations (Completed)
+- DeepLabCut pretrained inference on sagittal video ✅
+- MoveNet vs DLC comparison on sagittal video ✅
 
-### Phase C: Stage 5 — Research Experiments
-- Define research questions
-- Compare MoveNet across both videos
-- Document limitations and uncertainty quantification
+### Phase C: Stage 6 — Research Experiments: Alternative Anatomical Landmarks
+1. **Constraint:** Exact landmark configuration not yet finalized with supervisor — do not start manual annotation or training yet
+2. **Constraint:** Pretrained SuperAnimal-Human provides fixed COCO-style keypoints; custom landmarks require annotated dataset and model adaptation/training
+3. **Constraint:** Independent ground-truth measurements are necessary to evaluate actual accuracy
+4. Investigate alternative landmark configurations (thigh/shank landmarks, additional knee landmarks)
+5. Compare alternative configurations against conventional three-point baseline
 
-### Phase D: Stage 6 — DeepLabCut Transition
-1. **Separate environment:** Create `.venv-dlc` with DeepLabCut-compatible dependencies
-2. **DLC project:** Create project, define body parts (hip, knee, ankle, toe, heel)
-3. **Frame extraction:** Sample frames from sagittal video for annotation
-4. **Manual annotation:** Label keypoints in extracted frames using DLC labeling tool
-5. **Training:** Train DLC model on annotated frames
-6. **Evaluation:** Compare DLC predictions with MoveNet on same video
-7. **Analysis:** Assess improvement in keypoint accuracy, especially during occlusion
-
-### Phase E: Stage 7 — Evaluation and Research Questions
-- Compare MoveNet vs. DeepLabCut on sagittal video
-- Quantify occlusion handling improvement
-- Document research findings and limitations
+### Phase D: Stage 7 — Evaluation and Research Questions
+1. Define research questions (e.g., "How does camera angle affect knee angle accuracy?")
+2. Design evaluation protocol without ground truth
+3. Document limitations and uncertainty quantification
+4. Formulate final research conclusions
 
 ---
 
@@ -399,9 +411,9 @@ markerless-pose-estimation-lab/
 |-------|--------|----------|
 | Stage 1: Video Processing | COMPLETED | Notebook executed, report written |
 | Stage 2: MoveNet Inference | COMPLETED | Notebook executed (86 cells), report written, experiment logged |
-| Stage 3: Gait Analysis | PARTIALLY COMPLETED | Notebook partially executed (34/35 cells), video acquired, no report yet |
-| Stage 4: DeepLabCut Fundamentals | COMPLETED | Notebook executed (20 cells), pretrained inference on sagittal video, 406 frames processed, lower-body keypoints extracted, knee angles calculated |
-| Stage 5: MoveNet vs DLC Comparison | NOT STARTED | — |
+| Stage 3: Gait Analysis | COMPLETED | Notebook executed (22 cells), sagittal video processed, knee angles calculated |
+| Stage 4: DeepLabCut Fundamentals | COMPLETED | Notebook executed (39 cells), pretrained inference on sagittal video, 406 frames processed, lower-body keypoints extracted, knee angles calculated |
+| Stage 5: MoveNet vs DLC Comparison | COMPLETED | Notebook comparison cells (19–35), comparison report written, 4 CSV outputs generated |
 | Stage 6: Research Experiments | NOT STARTED | — |
 | Stage 7: Evaluation and Research Questions | NOT STARTED | — |
 

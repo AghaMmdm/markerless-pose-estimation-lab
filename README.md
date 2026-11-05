@@ -36,10 +36,10 @@ This is an educational project for learning markerless human pose estimation thr
 |-------|-------|--------|
 | 1 | Video processing with OpenCV | **COMPLETED** |
 | 2 | MoveNet inference & analysis | **COMPLETED** |
-| 3 | Keypoint visualization and motion analysis | NOT STARTED |
-| 4 | PoseNet | NOT STARTED |
-| 5 | OpenPose | NOT STARTED |
-| 6 | DeepLabCut | NOT STARTED |
+| 3 | Keypoint visualization and motion analysis | **COMPLETED** |
+| 4 | DeepLabCut fundamentals & pretrained inference | **COMPLETED** |
+| 5 | MoveNet vs DeepLabCut comparison | **COMPLETED** |
+| 6 | Research experiments: alternative anatomical landmarks | PLANNED |
 | 7 | Evaluation and research questions | NOT STARTED |
 
 ## Repository Structure
@@ -177,7 +177,17 @@ cp experiments/experiment_template.yaml experiments/exp_001_movenet.yaml
 
 See `reports/stage_2_pose_estimation.md` for detailed experimental report.
 
-Stages 3–7 are planned.
+**Stage 3 (Quantitative Gait Analysis) completed.** The notebook `notebooks/stage_3_gait_analysis.ipynb` covers MoveNet inference on the sagittal-plane walking video (406 frames, 82 sampled every 5th frame), lower-limb keypoint extraction, and knee-angle calculation for both legs (53 valid left, 71 valid right out of 82).
+
+**Stage 4 (DeepLabCut Fundamentals & Pretrained Inference) completed.** The notebook `notebooks/stage_4_deeplabcut_fundamentals.ipynb` covers DeepLabCut 3.0.2 setup, pretrained SuperAnimal-Human/RTMPose-X inference on the sagittal video (406 frames), lower-body keypoint extraction, and knee-angle calculation.
+
+**Stage 5 (MoveNet vs DeepLabCut Comparison) completed.** The comparison is implemented in `notebooks/stage_4_deeplabcut_fundamentals.ipynb` (cells 19–35) and documented in `reports/stage_5_movenet_dlc_comparison.md`. Key results:
+- Right knee: correlation 0.732, MAE 9.34°, valid paired frames 71
+- Left knee: correlation −0.073, MAE 20.94°, valid paired frames 51
+- DeepLabCut has higher detection coverage (82/82 right knee vs MoveNet 71/82)
+- Agreement ≠ accuracy — neither model is ground truth
+
+Stages 6–7 are planned.
 
 ## Official Documentation Links
 

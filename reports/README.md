@@ -6,10 +6,11 @@ This directory contains project progress tracking, experimental logs, and detail
 
 | File | Description | Last Updated |
 |------|-------------|--------------|
-| `progress.md` | Overall project status, completed/pending tasks, known issues | 2026-10-23 |
-| `experiment_log.md` | Table of all experiments with status and key results | 2026-10-23 |
+| `progress.md` | Overall project status, completed/pending tasks, known issues | 2026-11-05 |
+| `experiment_log.md` | Table of all experiments with status and key results | 2026-11-05 |
 | `stage_1_video_processing.md` | Detailed report on Stage 1 video processing exercises | 2026-10-20 |
 | `stage_2_pose_estimation.md` | Detailed experimental report for Stage 2 (MoveNet) | 2026-10-23 |
+| `stage_5_movenet_dlc_comparison.md` | Detailed comparison report for Stage 5 (MoveNet vs DeepLabCut) | 2026-11-05 |
 | `results.md` | Template for detailed per-experiment results | 2026-10-18 |
 | `figures/` | Generated plots and visualizations | — |
 
@@ -18,7 +19,7 @@ This directory contains project progress tracking, experimental logs, and detail
 | ID | Method | Stage | Status | Key Result |
 |----|--------|-------|--------|------------|
 | exp_001 | MoveNet Lightning (TFLite) | 2 | COMPLETED | 18 valid knee angles; letterbox preprocessing; sudden angle change at 3s investigated |
-| exp_002 | MoveNet (refined) | 3 | PLANNED | Knee-angle smoothing, hip/ankle angles, occlusion handling |
+| exp_002 | MoveNet vs DeepLabCut comparison | 5 | COMPLETED | Left knee: MAE 20.94°, corr −0.073, 51 valid pairs; Right knee: MAE 9.34°, corr 0.732, 71 valid pairs |
 | exp_003 | PoseNet | 4 | PLANNED | Comparison with MoveNet |
 | exp_004 | OpenPose | 5 | PLANNED | Multi-person evaluation |
 | exp_005 | DeepLabCut | 6 | PLANNED | Custom keypoint training |

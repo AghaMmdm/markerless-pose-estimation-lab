@@ -130,8 +130,8 @@ Approximate timeline: 1-2 hours/day, 4 weeks total.
 - Calculate joint angles from 2D keypoints (hip, knee, ankle)
 - Create time-series visualizations with confidence bands
 - Handle missing and low-confidence keypoints (interpolation, smoothing)
-- **Investigate occlusion handling strategies**
-- **Validate sagittal-plane gait analysis requirements**
+- Investigate occlusion handling strategies
+- Validate sagittal-plane gait analysis requirements
 
 ### Prerequisites from Stage 2
 - [x] MoveNet inference pipeline with letterbox preprocessing
@@ -165,12 +165,15 @@ Approximate timeline: 1-2 hours/day, 4 weeks total.
    - Effect on angle calculations
 
 ### Expected Outputs
-- [ ] Notebook: `notebooks/stage_3_keypoint_analysis.ipynb`
-- [ ] Module: `src/analysis/angles.py`
-- [ ] Module: `src/analysis/smoothing.py`
-- [ ] Angles CSV: `data/processed/angles_exp001.csv`
-- [ ] Figures: `reports/figures/fig_exp003_*.png`
-- [ ] Experiment log entry
+- [x] Notebook: `notebooks/stage_3_gait_analysis.ipynb` — Interactive exploration (completed)
+- [ ] Script: `scripts/extract_frames.py` - Extract frames at configurable intervals
+- [ ] Script: `scripts/video_info.py` - Print video metadata
+- [ ] Config: `configs/video.yaml` - Default video processing parameters
+- [x] Extracted frames in `data/interim/extracted_frames/` (17 frames from timestamp and interval sampling)
+- [x] Keypoints CSV: `data/processed/comparison/movenet_dlc_knee_angles.csv` (paired MoveNet/DLC knee angles)
+- [x] Agreement metrics CSV: `data/processed/comparison/agreement_metrics.csv`
+- [x] Bias analysis CSV: `data/processed/comparison/bias_analysis.csv`
+- [x] Detection coverage CSV: `data/processed/comparison/detection_coverage.csv`
 
 ### Key Formulas
 ```
@@ -196,13 +199,14 @@ def angle_2d(a, b, c):
 
 ---
 
-## Week 4: Comparing Methods and Research Foundations
+## Week 4: Comparing Methods and Research Foundations (Stage 4 & Stage 5)
 
 ### Learning Objectives
 - Compare MoveNet, PoseNet, OpenPose, DeepLabCut
 - Understand evaluation metrics for pose estimation
 - Formulate research questions
 - Design reproducible experiments
+- Compare MoveNet vs DeepLabCut predictions on same sagittal video
 
 ### Topics
 1. **Comparing pose estimation approaches**
@@ -231,9 +235,11 @@ def angle_2d(a, b, c):
    - Ethical considerations
 
 ### Expected Outputs
-- [ ] Notebook: `notebooks/stage_4_method_comparison.ipynb`
-- [ ] Updated: `docs/tools_comparison.md`
-- [ ] Updated: `docs/research_notes.md`
+- [x] Notebook: `notebooks/stage_4_deeplabcut_fundamentals.ipynb` — DLC fundamentals + comparison (completed)
+- [x] Report: `reports/stage_5_movenet_dlc_comparison.md` — MoveNet vs DLC comparison report (completed)
+- [x] Comparison CSVs: `data/processed/comparison/` (knee angles, agreement metrics, bias analysis, detection coverage)
+- [ ] Updated: `docs/tools_comparison.md` — Add MoveNet vs DLC results
+- [ ] Updated: `docs/research_notes.md` — Add comparison findings
 - [ ] Experiment configs in `experiments/`
 - [ ] Results in `reports/results.md`
 - [ ] Decision records in `docs/decisions/`
@@ -267,36 +273,26 @@ def oks(pred, gt, sigmas, area):
 
 ---
 
-## Stage 4+: Sagittal-Plane Gait Analysis (Next Major Stage)
+## Stage 6+: Research Experiments: Alternative Anatomical Landmarks
 
-**This is a research requirement, not an optional extension.**
+**This is the next research stage.**
 
-Our current frontal-view video is poorly suited for sagittal-plane flexion/extension measurements (hip/knee/ankle flexion primarily occurs in the sagittal plane). The next major stage **requires a suitable sagittal-plane walking video**.
+Investigate whether adding anatomical landmarks beyond the conventional hip–knee–ankle configuration can improve knee-angle estimation.
 
-### Prerequisites (Must Complete Before Stage 4)
-1. **Select and validate sagittal-plane walking video** — Side view of single person walking, full body visible, minimal occlusion
-2. **Camera view assessment** — Verify camera is perpendicular to walking direction
-3. **Frame sampling & pose estimation** — Apply Stage 2 pipeline to new video
-4. **Hip, knee, ankle keypoint trajectories** — Extract all three joint angles
-5. **Temporal angle plots** — Stance/swing phase detection, gait cycle segmentation
-6. **Occlusion handling** — Temporal smoothing, Kalman filtering, confidence-weighted interpolation
-6. **Measurement reliability evaluation** — Confidence bands, outlier detection, ground-truth comparison if available
+### Potential directions
+- Additional landmarks along the thigh and shank
+- Additional landmarks around the knee
+- Estimating segment orientations using multiple landmarks
+- Comparing alternative landmark configurations against the conventional three-point baseline
 
-### Video Selection Criteria
-- Sagittal (side) view, camera perpendicular to walking direction
-- Single person, full body visible
-- Multiple gait cycles (≥5 complete cycles)
-- Good lighting, minimal background clutter
-- Public domain / CC0 / permissive license (for redistribution in repo)
-- Recommended sources: OpenSim, KIT Motion, CMU MoCap, or self-recorded
+### Important constraints
+- The exact landmark configuration has not yet been finalized with the supervisor
+- Pretrained SuperAnimal-Human provides fixed keypoints; it does not automatically provide arbitrary custom anatomical landmarks
+- Custom landmarks may require an appropriately annotated dataset and model adaptation or training
+- Independent ground-truth measurements are necessary to evaluate actual accuracy
+- Do not start training or manual annotation yet
 
-### Why Sagittal Plane?
-- Hip/knee/ankle flexion/extension primarily occurs in sagittal plane
-- Frontal view captures abduction/adduction poorly
-- Standard gait analysis literature uses sagittal-plane kinematics
-- Enables stance/swing phase detection from knee angle trajectory
-
-### Beyond Stage 4: Further Extensions
+### Beyond Stage 6: Further Extensions
 - **3D Pose Estimation**: VideoPose3D, MediaPipe Pose 3D
 - **Temporal Models**: TCN, LSTM for smoothing
 - **Action Recognition**: Classify gait, activities
