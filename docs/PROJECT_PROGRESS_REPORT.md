@@ -13,8 +13,9 @@
 
 **Research Direction:**
 - Stage 1–2: Video processing and MoveNet inference on a frontal-view walking video (COMPLETED)
-- Stage 3: Quantitative gait analysis on a newly-acquired sagittal-plane video (IN PROGRESS)
-- Stage 4+: Sagittal-plane gait analysis, pose estimation reliability, DeepLabCut transition (PLANNED)
+- Stage 3: Quantitative gait analysis on a sagittal-plane video (IN PROGRESS)
+- Stage 4: DeepLabCut fundamentals and pretrained inference (COMPLETED)
+- Stage 5+: MoveNet vs DeepLabCut comparison and research experiments (PLANNED)
 
 **Learning Goals:** Video I/O with OpenCV, keypoint extraction, coordinate mapping, joint-angle calculation, temporal visualization, occlusion analysis, and model reliability evaluation.
 
@@ -169,13 +170,58 @@ markerless-pose-estimation-lab/
 
 ---
 
-### Stages 4–7: NOT STARTED
+### Stage 4: DeepLabCut Fundamentals & Pretrained Inference — COMPLETED
+
+**Evidence:**
+- `notebooks/stage_4_deeplabcut_fundamentals.ipynb` — 20 cells, all executed (cell 19 empty)
+- Modified but not committed (shown as `M notebooks/stage_4_deeplabcut_fundamentals.ipynb` in git status)
+
+**DeepLabCut environment:**
+- DeepLabCut 3.0.2, PyTorch 2.14.1+cu126, CUDA available
+- NVIDIA RTX 4060 Laptop GPU
+- Python environment: separate `.venv-dlc` from main project venv
+
+**Pretrained inference (Zero-shot):**
+- Model: SuperAnimal-Human / RTMPose-X
+- Detector: Faster R-CNN MobileNet V3 Large FPN
+- Inference type: Top-down (person detection → pose estimation)
+- Input video: `data/raw/sagittal_walking.mp4` (406 frames, 1920×1080, 30 FPS)
+- Inference time: ~21 seconds (notebook output)
+- `video_adapt=False` (no model adaptation), `batch_size=1`, `device="auto"`
+
+**Generated artifacts (`data/processed/deeplabcut/`):**
+| File | Size | Description |
+|------|------|-------------|
+| `sagittal_walking_superanimal_humanbody_rtmpose_x_fasterrcnn_mobilenet_v3_large_fpn.h5` | 960 KB | HDF5 with MultiIndex DataFrame: scorer × individuals × bodyparts × coords |
+| `sagittal_walking_superanimal_humanbody_rtmpose_x_fasterrcnn_mobilenet_v3_large_fpn_before_adapt.json` | 1.8 MB | JSON metadata of predictions |
+| `sagittal_walking_superanimal_humanbody_rtmpose_x_fasterrcnn_mobilenet_v3_large_fpn_labeled_before_adapt.mp4` | 13.4 MB | Labeled video with overlaid predictions |
+| `*_full.pickle` | — | Full pickle results (referenced in notebook output) |
+
+**HDF5 structure:**
+- 406 rows (frames), 510 columns (MultiIndex: scorer × 10 individuals × 17 bodyparts × 3 coords)
+- Only `animal0` has predictions (406/406 valid frames); animals 1–9 are empty
+- Coords: x, y, likelihood per bodypart
+
+**Lower-body keypoint confidence (animal0, 406 frames each):**
+| Keypoint | Mean Confidence | Min | Max |
+|----------|----------------|-----|-----|
+| left_hip | 0.439 | 0.271 | 0.686 |
+| right_hip | 0.447 | 0.272 | 0.728 |
+| left_knee | 0.664 | 0.419 | 0.965 |
+| right_knee | 0.669 | 0.419 | 0.960 |
+| left_ankle | 0.622 | 0.278 | 0.898 |
+| right_ankle | 0.619 | 0.403 | 0.912 |
+
+**Knee angles calculated:** Left and right knee angle trajectories computed using 3-point geometric method (hip-knee-ankle) and plotted.
+
+---
+
+### Stages 5–7: NOT STARTED
 
 | Stage | Topic | Status |
 |-------|-------|--------|
-| 4 | Pose estimation reliability and limitations | NOT STARTED |
-| 5 | Research experiments: keypoint selection & lower-limb joint angles | NOT STARTED |
-| 6 | DeepLabCut | NOT STARTED |
+| 5 | MoveNet vs DeepLabCut comparison | PLANNED |
+| 6 | Research experiments: alternative anatomical landmarks | NOT STARTED |
 | 7 | Evaluation and research questions | NOT STARTED |
 
 ---
@@ -237,11 +283,15 @@ markerless-pose-estimation-lab/
 | Matplotlib | 3.8+ |
 | Jupyter | 1.0+ |
 | ai-edge-litert (TFLite runtime) | Installed (not in requirements.txt) |
-| Model | MoveNet Lightning TFLite (4.8 MB) |
-| Model input | 192 × 192 × 3 uint8 |
-| Model output | 1 × 1 × 17 × 3 float32 [y, x, confidence] |
+| DeepLabCut | 3.0.2 (separate `.venv-dlc` environment) |
+| PyTorch (for DLC) | 2.14.1+cu126 |
+| MoveNet Lightning TFLite | 4.8 MB model |
+| MoveNet input | 192 × 192 × 3 uint8 |
+| MoveNet output | 1 × 1 × 17 × 3 float32 [y, x, confidence] |
+| SuperAnimal-Human / RTMPose-X | DLC pretrained model |
+| DLC detector | Faster R-CNN MobileNet V3 Large FPN |
 
-**Missing from requirements.txt:** `ai-edge-litert` (TFLite) is used but not listed as a dependency.
+**Missing from requirements.txt:** `ai-edge-litert` (TFLite) is used but not listed. DeepLabCut dependencies are intentionally NOT in the main requirements file — they belong in a separate `.venv-dlc` environment.
 
 ---
 
@@ -263,6 +313,8 @@ markerless-pose-estimation-lab/
 
 7. **Sagittal video license undocumented** — Source and redistribution rights for `sagittal_walking.mp4` not recorded.
 
+8. **DeepLabCut pretrained model limitations** — SuperAnimal-Human provides fixed 17 COCO-style keypoints; does not support custom anatomical landmark definition without manual annotation and training.
+
 ### Optional Improvements (not blocking)
 
 1. Temporal smoothing (Kalman filter, EMA) for angle time series
@@ -276,17 +328,20 @@ markerless-pose-estimation-lab/
 ## 9. Recommended Next Steps
 
 ### Immediate (Stage 3 completion)
-1. Commit the uncommitted notebook changes (`stage_2_pose_estimation.ipynb`, `stage_3_gait_analysis.ipynb`)
+1. Commit the uncommitted notebook changes (`stage_2_pose_estimation.ipynb`, `stage_3_gait_analysis.ipynb`, `stage_4_deeplabcut_fundamentals.ipynb`)
 2. Add `ai-edge-litert` to `requirements.txt`
 3. Complete Stage 3 cell 20 (hip/ankle angles, additional visualization)
 4. Save keypoints and angle data to CSV in `data/processed/`
 5. Create `reports/stage_3_gait_analysis.md`
 6. Update `reports/experiment_log.md` with exp_002 (MoveNet refined + letterbox on sagittal video)
 
-### Short-term (Stage 4: Reliability)
-1. Investigate occlusion handling (temporal smoothing, confidence-weighted interpolation)
-2. Document camera stabilization approaches
-3. Compare letterbox vs. direct resize results quantitatively
+### Short-term (Stage 4 & Stage 5: DeepLabCut comparison)
+1. Create `docs/MOVENET_DLC_COMPARISON_PLAN.md` — experimental plan for MoveNet vs DeepLabCut comparison on sagittal video
+2. Align frame indices: MoveNet sampled 82 frames (every 5th), DLC processed all 406 frames — comparison must use matching frame indices
+3. Compare lower-limb keypoints (left/right hip, knee, ankle) between both models
+4. Compare knee-angle trajectories using same 3-point geometric method
+5. Document confidence distribution differences (note: scores not directly calibrated across models)
+6. Investigate occlusion handling differences between MoveNet and DLC
 
 ### Medium-term (Stage 5: Research experiments)
 1. Define research questions (e.g., "How does camera angle affect knee angle accuracy?")
@@ -345,13 +400,14 @@ markerless-pose-estimation-lab/
 | Stage 1: Video Processing | COMPLETED | Notebook executed, report written |
 | Stage 2: MoveNet Inference | COMPLETED | Notebook executed (86 cells), report written, experiment logged |
 | Stage 3: Gait Analysis | PARTIALLY COMPLETED | Notebook partially executed (34/35 cells), video acquired, no report yet |
-| Stage 4: Reliability | NOT STARTED | — |
-| Stage 5: Research Experiments | NOT STARTED | — |
-| Stage 6: DeepLabCut | NOT STARTED | — |
+| Stage 4: DeepLabCut Fundamentals | COMPLETED | Notebook executed (20 cells), pretrained inference on sagittal video, 406 frames processed, lower-body keypoints extracted, knee angles calculated |
+| Stage 5: MoveNet vs DLC Comparison | NOT STARTED | — |
+| Stage 6: Research Experiments | NOT STARTED | — |
+| Stage 7: Evaluation and Research Questions | NOT STARTED | — |
 
 **Key assets available:** MoveNet TFLite model, frontal video, sagittal video, letterbox preprocessing pipeline, coordinate inverse transform, angle calculation function, bilateral keypoint comparison framework.
 
-**Critical gap:** No sagittal-plane video license documentation; Stage 3 notebook modifications uncommitted; `ai-edge-litert` missing from requirements.txt.
+**Critical gap:** No sagittal-plane video license documentation; Stage 3 and Stage 4 notebook modifications uncommitted; `ai-edge-litert` missing from requirements.txt.
 
 ---
 
@@ -383,3 +439,9 @@ markerless-pose-estimation-lab/
 24. `experiments/experiment_template.yaml` — experiment config template
 25. `configs/README.md` — configs documentation
 26. `pyproject.toml` — project packaging config
+27. `notebooks/stage_4_deeplabcut_fundamentals.ipynb` — Stage 4 notebook (modified, uncommitted)
+28. `data/raw/sagittal_walking.mp4` — sagittal walking video (32 MB, untracked)
+29. `data/processed/deeplabcut/` — DeepLabCut output directory (untracked)
+   - `*.h5` — HDF5 predictions (960 KB, 406 frames × 510 columns)
+   - `*_before_adapt.json` — JSON metadata (1.8 MB)
+   - `*_labeled_before_adapt.mp4` — labeled video (13.4 MB)
